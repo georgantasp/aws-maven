@@ -30,6 +30,7 @@ import org.apache.maven.wagon.proxy.ProxyInfoProvider;
 import org.apache.maven.wagon.repository.Repository;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -153,6 +154,7 @@ public final class SimpleStorageServiceWagon extends AbstractWagon {
             S3Object s3Object = this.amazonS3.getObject(this.bucketName, getKey(resourceName));
 
             in = s3Object.getObjectContent();
+            Files.createDirectories(destination.toPath().getParent());
             out = new TransferProgressFileOutputStream(destination, transferProgress);
 
             IoUtils.copy(in, out);

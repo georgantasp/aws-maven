@@ -204,7 +204,23 @@ public final class SimpleStorageServiceWagonIntegrationTest {
         when(this.s3Object.getObjectContent())
                 .thenReturn(new S3ObjectInputStream(new FileInputStream("src/test/resources/test.txt"), null));
 
-        File target = new File("target/robots.txt");
+        File target = new File("./target/robots.txt");
+        target.delete();
+        assertFalse(target.exists());
+
+        this.wagon.getResource(FILE_NAME, target, this.transferProgress);
+
+        assertTrue(target.exists());
+    }
+
+    @Test
+    public void getResourceIntoNewDir() throws TransferFailedException, FileNotFoundException, ResourceDoesNotExistException {
+        when(this.amazonS3.getObject(SimpleStorageServiceWagonIntegrationTest.BUCKET_NAME,
+                BASE_DIRECTORY + FILE_NAME)).thenReturn(this.s3Object);
+        when(this.s3Object.getObjectContent())
+                .thenReturn(new S3ObjectInputStream(new FileInputStream("src/test/resources/test.txt"), null));
+
+        File target = new File("./target/newdir/robots.txt");
         target.delete();
         assertFalse(target.exists());
 
